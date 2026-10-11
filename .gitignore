@@ -1,0 +1,25 @@
+# --- Node.js ---
+# npm が取得した外部ライブラリ。package.json から再生成できるので記録しない。
+node_modules/
+
+# ビルド生成物。ソースから作り直せる。
+dist/
+build/
+
+# --- 環境変数・秘密情報 ---
+# 将来、接続先や API Key を置く場所。中身は Git に入れない。
+# 雛形（.env.example）だけは記録する。
+.env
+.env.local
+.env.*.local
+
+# --- OS・エディタ ---
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# --- ログ ---
+*.log
+npm-debug.log*

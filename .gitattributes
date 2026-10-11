@@ -1,0 +1,4 @@
+# リポジトリ内の改行コードを LF に統一する。
+# Windows の core.autocrlf=true との組み合わせで出る警告を止め、
+# 他の OS で clone しても差分が出ないようにする。
+* text=auto eol=lf
