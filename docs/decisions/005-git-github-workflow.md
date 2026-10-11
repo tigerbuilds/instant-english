@@ -41,7 +41,7 @@ Conventional Commits（`feat:` `fix:` `docs:` `chore:` `refactor:` `test:` の�
 - Commit メッセージ: **Conventional Commits** を使う。
 - 秘密情報: 現時点では無い。`.gitignore` には `node_modules` などの生成物のみ入れる。環境変数の仕組みは必要になった時点で導入する。
 - GitHub リポジトリの作成: Phase 3 で `.gitignore`、`.gitattributes`、README を揃えてから行う。
-- `main` ブランチの保護（PR 経由のみ、force push 禁止）を Phase 3 で設定する。
+- `main` ブランチの保護は **force push 禁止と削除禁止の 2 つ** に絞る。「PR 経由のみ」は「文書は `main` に直接 Commit」と両立しないため設定しない。
 
 ## Why
 
@@ -53,6 +53,10 @@ Conventional Commits（`feat:` `fix:` `docs:` `chore:` `refactor:` `test:` の�
 
 - Public のため、誤った Commit もすべて公開される。履歴の書き換えはしない方針なので、誤りは次の Commit で直す。
 - 1 人開発の PR は形式的になりやすい。説明文を書く習慣を保てるかは本人次第。
+
+## 変更履歴
+
+- 2026-10-11: `main` の保護内容を「PR 経由のみ」から「force push 禁止・削除禁止」に変更。文書の直接 Commit と矛盾するため。GitHub リポジトリ `tigerbuilds/instant-english` を作成。
 
 ## 他人からの PR について
 
