@@ -2,7 +2,7 @@
 
 日常会話に特化した瞬間英作文 Web アプリ。日本語の文を見て、制限時間内に英語で答え、ローカル LLM から「文法」「自然さ」「より自然な言い方」のフィードバックを受ける。
 
-**開発中（Phase 3 / 13）。** まだ動くものはありません。
+**開発中（Phase 4 完了 / 13）。** 裏側の API と画面の雛形が起動するところまで。アプリとしてはまだ動きません。
 
 ## このプロジェクトの目的
 
@@ -28,19 +28,39 @@
 - [アーキテクチャ](docs/architecture.md)
 - [意思決定の記録（ADR）](docs/decisions/)
 
-## 構成（予定）
+## 構成
 
 ```text
 instant-english/
 ├── docs/        要件・設計・ADR
-├── frontend/    画面（React + Vite）
-├── backend/     API（Node.js + Express）
+├── frontend/    画面（Vite + TypeScript。React は Phase 5 で導入予定）
+├── backend/     API（Node.js + Express + TypeScript）
 └── README.md
 ```
 
 ## ローカルで動かす
 
-Phase 4 以降に記載。
+前提: Node.js 24 以上。
+
+裏側と画面は別のプログラムなので、端末を 2 枚使う。
+
+```bash
+# 端末 1: 裏側 API（http://localhost:3000）
+cd backend
+npm install
+npm run dev
+```
+
+```bash
+# 端末 2: 画面（http://localhost:5173）
+cd frontend
+npm install
+npm run dev
+```
+
+型検査は `backend` で `npm run check`。
+
+Windows の PowerShell で `npm` が「スクリプトの実行が無効」で止まる場合は、`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` を実行するか、cmd を使う。
 
 ## 開発の進め方
 
