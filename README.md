@@ -2,7 +2,7 @@
 
 日常会話に特化した瞬間英作文 Web アプリ。日本語の文を見て、制限時間内に英語で答え、ローカル LLM から「文法」「自然さ」「より自然な言い方」のフィードバックを受ける。
 
-**開発中（Phase 4 完了 / 13）。** 裏側の API と画面の雛形が起動するところまで。アプリとしてはまだ動きません。
+**開発中（Phase 5 完了 / 13）。** 画面だけで「日本語問題 → 英語入力 → 回答表示 → 次へ」と 30 秒の制限時間が動く。LLM 評価と裏側との接続はまだ。
 
 ## このプロジェクトの目的
 
@@ -17,7 +17,7 @@
 
 | 役割 | 選定 | 理由 |
 |---|---|---|
-| 画面 | React + Vite + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md) |
+| 画面 | React + Vite + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md), [ADR 006](docs/decisions/006-frontend-ui-library.md) |
 | 裏側 | Node.js + Express + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md), [ADR 002](docs/decisions/002-backend-framework.md) |
 | LLM | Ollama（ローカル） | [ADR 003](docs/decisions/003-llm-runtime.md) |
 | 開発環境 | Node.js 24, npm, VS Code, Docker なし | [ADR 004](docs/decisions/004-development-environment.md) |
@@ -33,7 +33,7 @@
 ```text
 instant-english/
 ├── docs/        要件・設計・ADR
-├── frontend/    画面（Vite + TypeScript。React は Phase 5 で導入予定）
+├── frontend/    画面（React + Vite + TypeScript）
 ├── backend/     API（Node.js + Express + TypeScript）
 └── README.md
 ```
@@ -58,7 +58,7 @@ npm install
 npm run dev
 ```
 
-型検査は `backend` で `npm run check`。
+型検査は `backend`、`frontend` それぞれで `npm run check`。
 
 Windows の PowerShell で `npm` が「スクリプトの実行が無効」で止まる場合は、`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` を実行するか、cmd を使う。
 
