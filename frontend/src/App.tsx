@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 const TIME_LIMIT_SECONDS = 30;
@@ -14,6 +14,7 @@ export function App() {
   const [answer, setAnswer] = useState("");
   const [remaining, setRemaining] = useState(TIME_LIMIT_SECONDS);
   const [submitted, setSubmitted] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (submitted) return;
@@ -26,6 +27,10 @@ export function App() {
   useEffect(() => {
     if (remaining <= 0) setSubmitted(true);
   }, [remaining]);
+
+  useEffect(() => {
+  if (!submitted) inputRef.current?.focus();
+  }, [index, submitted]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -54,6 +59,7 @@ export function App() {
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
           disabled={submitted}
+          ref={inputRef}
         />
         <button type="submit" disabled={submitted}>送信</button>
       </form>
