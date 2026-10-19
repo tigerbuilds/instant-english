@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import type { Question, Evaluation } from "../../shared/types.ts";
 
 const TIME_LIMIT_SECONDS = 30;
 
-type Question = { id: number; japanese: string; nextId: number };
-type Evaluation = {                                                    // ★ 裏側と同じ形
-  grammar: string | null;
-  naturalness: string | null;
-  better: string;
-};
 type Status = "answering" | "evaluating" | "done" | "error";           // ★
 
 export function App() {

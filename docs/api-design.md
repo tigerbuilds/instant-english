@@ -1,7 +1,7 @@
 # API Design
 
 - 作成日: 2026-10-19
-- ステータス: Draft（Phase 6）
+- ステータス: Accepted（Phase 6 完了時点）
 - 対象: MVP
 
 画面（frontend）と裏側（backend）の間の取り決め。「どの URL に、どんな頼み方をすると、どんな返事が来るか」を定める。データの流れは `architecture.md` 3 章を参照。
@@ -127,7 +127,11 @@ POST /api/evaluate
 
 ---
 
-## 4. 画面側から見た使い方
+## 4. 型の共有
+
+この取り決めは `shared/types.ts` に TypeScript の型として書き、画面と裏側の両方がそこから取り込む。取り決めを変えるときは、このドキュメントと `shared/types.ts` を直し、両側の `npm run check` でずれを見つける。
+
+## 5. 画面側から見た使い方
 
 ```text
 起動        GET  /api/questions/1         → 問題を表示、タイマー開始

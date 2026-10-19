@@ -1,19 +1,13 @@
 import express from "express";
 import { readFileSync } from "node:fs";
+import type { Question, EvaluateRequest, Evaluation } from "../shared/types.ts";
 
-type Question = { id: number; japanese: string };
 
-const questions: Question[] = JSON.parse(readFileSync("data/questions.json", "utf-8"));
+const questions: Omit<Question, "nextId">[] = JSON.parse(readFileSync("data/questions.json", "utf-8"));
 
 const app = express();
 app.use(express.json());                                        // ★ 本文の JSON を req.body に入れる関所
 
-type EvaluateRequest = { questionId: number; answer: string };  // ★
-type Evaluation = {                                             // ★
-  grammar: string | null;
-  naturalness: string | null;
-  better: string;
-};
 
 app.get("/api/questions/:id", (req, res) => {
   const id = Number(req.params.id);
