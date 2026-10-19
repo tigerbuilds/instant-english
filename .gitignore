@@ -23,3 +23,8 @@ Thumbs.db
 # --- ログ ---
 *.log
 npm-debug.log*
+
+# --- TypeScript の変換結果 ---
+# backend は node が .ts を直接実行する。tsc の誤実行で生まれた .js は記録しない。
+backend/*.js
+shared/*.js

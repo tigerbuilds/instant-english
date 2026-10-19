@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node server.ts",
+    "dev": "node --watch server.ts",
     "check": "tsc"
   },
   "keywords": [],

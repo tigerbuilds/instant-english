@@ -1,53 +1,86 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
+import type { Question, Evaluation } from "../../shared/types.ts";
 
 const TIME_LIMIT_SECONDS = 30;
 
-const questions = [
-  { id: 1, japanese: "昨日の会議、ちょっと長かったよね" },
-  { id: 2, japanese: "週末は何か予定ある？" },
-  { id: 3, japanese: "それ、あとでメールで送っておくね" },
-];
+type Status = "answering" | "evaluating" | "done" | "error";           // ★
 
 export function App() {
-  const [index, setIndex] = useState(0);
+  const [question, setQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState("");
   const [remaining, setRemaining] = useState(TIME_LIMIT_SECONDS);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>("answering");           // ★ submitted の代わり
+  const [evaluation, setEvaluation] = useState<Evaluation | null>(null); // ★
+  const [errorMessage, setErrorMessage] = useState("");                // ★
   const inputRef = useRef<HTMLInputElement>(null);
 
+  async function loadQuestion(id: number) {
+    const res = await fetch(`/api/questions/${id}`);
+    const data: Question = await res.json();
+    setQuestion(data);
+    setAnswer("");
+    setRemaining(TIME_LIMIT_SECONDS);
+    setStatus("answering");                                            // ★
+    setEvaluation(null);                                               // ★
+  }
+
+  async function submitAnswer() {                                      // ★ 送信と評価待ち
+    if (!question) return;
+    setStatus("evaluating");
+    try {
+      const res = await fetch("/api/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionId: question.id, answer }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data: Evaluation = await res.json();
+      setEvaluation(data);
+      setStatus("done");
+    } catch (e) {
+      setErrorMessage(e instanceof Error ? e.message : String(e));
+      setStatus("error");
+    }
+  }
+
   useEffect(() => {
-    if (submitted) return;
+    loadQuestion(1);
+  }, []);
+
+  useEffect(() => {
+    if (status !== "answering" || question === null) return;           // ★
     const id = window.setInterval(() => {
       setRemaining((r) => r - 1);
     }, 1000);
     return () => window.clearInterval(id);
-  }, [index, submitted]);
+  }, [question, status]);                                              // ★
 
   useEffect(() => {
-    if (remaining <= 0) setSubmitted(true);
+    if (remaining <= 0 && status === "answering") submitAnswer();      // ★ 時間切れ
   }, [remaining]);
 
   useEffect(() => {
-  if (!submitted) inputRef.current?.focus();
-  }, [index, submitted]);
+    if (status === "answering") inputRef.current?.focus();             // ★
+  }, [question, status]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+    submitAnswer();                                                    // ★
   }
 
   function handleNext() {
-    setIndex((i) => (i + 1) % questions.length);
-    setAnswer("");
-    setRemaining(TIME_LIMIT_SECONDS);
-    setSubmitted(false);
+    if (question) loadQuestion(question.nextId);
   }
+
+  if (question === null) return <p>読み込み中...</p>;
+
+  const answering = status === "answering";                            // ★
 
   return (
     <>
       <h1>瞬間英作文</h1>
-      <p id="question">{questions[index].japanese}</p>
+      <p id="question">{question.japanese}</p>
       <p>残り {remaining} 秒</p>
 
       <form onSubmit={handleSubmit}>
@@ -58,15 +91,27 @@ export function App() {
           autoComplete="off"
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          disabled={submitted}
+          disabled={!answering}                                        // ★
           ref={inputRef}
         />
-        <button type="submit" disabled={submitted}>送信</button>
+        <button type="submit" disabled={!answering}>送信</button>       {/* ★ */}
       </form>
 
-      {submitted && (
+      {status === "evaluating" && <p>評価中...</p>}                      {/* ★ */}
+
+      {status === "error" && (                                         // ★
+        <section>
+          <p>評価に失敗しました（{errorMessage}）</p>
+          <button type="button" onClick={handleNext}>次へ</button>
+        </section>
+      )}
+
+      {status === "done" && evaluation && (                            // ★
         <section>
           <p>あなたの回答：{answer || "（未回答）"}</p>
+          <p>より自然な英文：{evaluation.better}</p>
+          {evaluation.grammar && <p>文法：{evaluation.grammar}</p>}
+          {evaluation.naturalness && <p>自然さ：{evaluation.naturalness}</p>}
           <button type="button" onClick={handleNext}>次へ</button>
         </section>
       )}

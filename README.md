@@ -26,6 +26,7 @@
 
 - [要件定義](docs/product-requirements.md)
 - [アーキテクチャ](docs/architecture.md)
+- [API 設計](docs/api-design.md)
 - [意思決定の記録（ADR）](docs/decisions/)
 
 ## 構成
@@ -35,6 +36,7 @@ instant-english/
 ├── docs/        要件・設計・ADR
 ├── frontend/    画面（React + Vite + TypeScript）
 ├── backend/     API（Node.js + Express + TypeScript）
+├── shared/      画面と裏側で共有する型（API の取り決め）
 └── README.md
 ```
 
