@@ -47,6 +47,6 @@ app.post("/api/evaluate", (req, res) => {                       // ★ ここか
   res.json(evaluation);
 });
 
-app.listen(3000, () => {
+app.listen(3000, "127.0.0.1", () => {
   console.log("listening on http://localhost:3000");
 });
