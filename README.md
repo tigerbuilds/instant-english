@@ -2,7 +2,7 @@
 
 日常会話に特化した瞬間英作文 Web アプリ。日本語の文を見て、制限時間内に英語で答え、ローカル LLM から「文法」「自然さ」「より自然な言い方」のフィードバックを受ける。
 
-**開発中（Phase 6 完了 / 13）。** 画面と裏側がつながり、問題の取得と評価 API の往復が動く。評価の中身はまだ仮の返事で、Ollama との接続は Phase 8。
+**開発中（Phase 8 完了 / 13）。** MVP の核が動く。日本語の問題に 30 秒で英訳し、ローカル LLM（Ollama + Qwen3.5 4B）が文法・自然さ・より自然な英文を返す。履歴の保存（Database）はこれから。
 
 ## このプロジェクトの目的
 
@@ -19,7 +19,7 @@
 |---|---|---|
 | 画面 | React + Vite + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md), [ADR 006](docs/decisions/006-frontend-ui-library.md) |
 | 裏側 | Node.js + Express + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md), [ADR 002](docs/decisions/002-backend-framework.md) |
-| LLM | Ollama（ローカル） | [ADR 003](docs/decisions/003-llm-runtime.md) |
+| LLM | Ollama + qwen3.5:4b（ローカル） | [ADR 003](docs/decisions/003-llm-runtime.md), [ADR 007](docs/decisions/007-llm-model.md) |
 | 開発環境 | Node.js 24, npm, VS Code, Docker なし | [ADR 004](docs/decisions/004-development-environment.md) |
 
 ## ドキュメント
@@ -42,9 +42,22 @@ instant-english/
 
 ## ローカルで動かす
 
-前提: Node.js 24 以上。
+前提: Node.js 24 以上、Ollama。
 
-裏側と画面は別のプログラムなので、端末を 2 枚使う。
+初回のみ、モデルを取得する。
+
+```bash
+ollama pull qwen3.5:4b
+```
+
+裏側の設定は `backend/.env.example` を `backend/.env` にコピーする（既定値のままなら省略可）。
+
+Ollama、裏側、画面は別のプログラムなので、端末を 3 枚使う。Windows 版 Ollama は常駐していることが多く、`http://localhost:11434` で「Ollama is running」と出れば起動不要。
+
+```bash
+# 端末 0: Ollama（常駐していなければ）
+ollama serve
+```
 
 ```bash
 # 端末 1: 裏側 API（http://localhost:3000）
