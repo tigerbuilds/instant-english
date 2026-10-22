@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch server.ts",
+    "dev": "node --watch --env-file-if-exists=.env server.ts",
     "check": "tsc"
   },
   "keywords": [],

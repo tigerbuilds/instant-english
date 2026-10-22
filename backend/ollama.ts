@@ -1,7 +1,7 @@
 import type { Evaluation } from "../shared/types.ts";
 
-const OLLAMA_URL = "http://localhost:11434";
-const MODEL = "qwen3.5:4b";
+const OLLAMA_URL = process.env.OLLAMA_URL ?? "http://localhost:11434";
+const MODEL = process.env.OLLAMA_MODEL ?? "qwen3.5:4b";
 
 const SYSTEM_PROMPT = `You are an English conversation tutor for an advanced Japanese learner (CEFR C1).
 The learner translates a Japanese sentence into casual spoken English. Evaluate the translation and reply in JSON only.
