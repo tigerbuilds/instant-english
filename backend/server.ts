@@ -1,3 +1,4 @@
+import { evaluateWithOllama } from "./ollama.ts";
 import express from "express";
 import { readFileSync } from "node:fs";
 import type { Question, EvaluateRequest, Evaluation } from "../shared/types.ts";
@@ -23,7 +24,7 @@ app.get("/api/questions/:id", (req, res) => {
   res.json({ id: question.id, japanese: question.japanese, nextId: next.id });
 });
 
-app.post("/api/evaluate", (req, res) => {                       // ★ ここから新しい処理
+app.post("/api/evaluate", async (req, res) => {
   const body = req.body as Partial<EvaluateRequest>;
 
   if (typeof body.questionId !== "number" || typeof body.answer !== "string") {
@@ -37,14 +38,19 @@ app.post("/api/evaluate", (req, res) => {                       // ★ ここか
     return;
   }
 
-  const isEmpty = body.answer.trim() === "";
-  const evaluation: Evaluation = {
-    grammar: isEmpty ? null : "（仮）文法の指摘がここに入ります",
-    naturalness: isEmpty ? null : "（仮）自然さの指摘がここに入ります",
-    better: `（仮）「${question.japanese}」のより自然な英文がここに入ります`,
-  };
-
-  res.json(evaluation);
+  const startedAt = Date.now();
+  try {
+    const evaluation = await evaluateWithOllama(question.japanese, body.answer);
+    if (body.answer.trim() === "") {
+      evaluation.grammar = null;
+      evaluation.naturalness = null;
+    }
+    console.log(`evaluate: question ${question.id}, ${Date.now() - startedAt} ms`);
+    res.json(evaluation);
+  } catch (e) {
+    console.error("evaluate failed:", e);
+    res.status(502).json({ error: "evaluation failed" });
+  }
 });
 
 app.listen(3000, "127.0.0.1", () => {

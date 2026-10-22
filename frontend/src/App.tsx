@@ -106,12 +106,12 @@ export function App() {
         </section>
       )}
 
-      {status === "done" && evaluation && (                            // ★
+      {status === "done" && evaluation && (
         <section>
           <p>あなたの回答：{answer || "（未回答）"}</p>
           <p>より自然な英文：{evaluation.better}</p>
-          {evaluation.grammar && <p>文法：{evaluation.grammar}</p>}
-          {evaluation.naturalness && <p>自然さ：{evaluation.naturalness}</p>}
+          {answer && <p>文法：{evaluation.grammar ?? "問題なし"}</p>}
+          {answer && <p>自然さ：{evaluation.naturalness ?? "問題なし"}</p>}
           <button type="button" onClick={handleNext}>次へ</button>
         </section>
       )}
