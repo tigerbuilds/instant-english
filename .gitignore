@@ -31,3 +31,9 @@ shared/*.js
 
 # --- 手元の実験用 ---
 backend/tmp/
+
+# --- Database の実データ ---
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/*.db-wal
+backend/data/*.db-shm
