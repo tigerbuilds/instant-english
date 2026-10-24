@@ -2,9 +2,11 @@ import { evaluateWithOllama } from "./ollama.ts";
 import express from "express";
 import { readFileSync } from "node:fs";
 import type { Question, EvaluateRequest, Evaluation } from "../shared/types.ts";
+import { upsertQuestions, saveAnswer } from "./db.ts";
 
 
 const questions: Omit<Question, "nextId">[] = JSON.parse(readFileSync("data/questions.json", "utf-8"));
+upsertQuestions(questions);
 
 const app = express();
 app.use(express.json());                                        // ★ 本文の JSON を req.body に入れる関所
@@ -44,6 +46,12 @@ app.post("/api/evaluate", async (req, res) => {
     if (body.answer.trim() === "") {
       evaluation.grammar = null;
       evaluation.naturalness = null;
+    }
+
+    try {
+      saveAnswer(question.id, body.answer, evaluation);
+    } catch (e) {
+      console.error("save failed:", e);
     }
     console.log(`evaluate: question ${question.id}, ${Date.now() - startedAt} ms`);
     res.json(evaluation);
