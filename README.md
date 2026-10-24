@@ -20,6 +20,7 @@
 | 画面 | React + Vite + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md), [ADR 006](docs/decisions/006-frontend-ui-library.md) |
 | 裏側 | Node.js + Express + TypeScript | [ADR 001](docs/decisions/001-app-structure-and-language.md), [ADR 002](docs/decisions/002-backend-framework.md) |
 | LLM | Ollama + qwen3.5:4b（ローカル） | [ADR 003](docs/decisions/003-llm-runtime.md), [ADR 007](docs/decisions/007-llm-model.md) |
+| Database | SQLite（Node.js 標準の `node:sqlite`、SQL 直書き） | [ADR 008](docs/decisions/008-database.md), [ADR 009](docs/decisions/009-sql-vs-orm.md) |
 | 開発環境 | Node.js 24, npm, VS Code, Docker なし | [ADR 004](docs/decisions/004-development-environment.md) |
 
 ## ドキュメント
@@ -27,6 +28,7 @@
 - [要件定義](docs/product-requirements.md)
 - [アーキテクチャ](docs/architecture.md)
 - [API 設計](docs/api-design.md)
+- [Database 設計](docs/database-design.md)
 - [意思決定の記録（ADR）](docs/decisions/)
 
 ## 構成
@@ -74,6 +76,10 @@ npm run dev
 ```
 
 型検査は `backend`、`frontend` それぞれで `npm run check`。
+
+画面に「評価に失敗しました（HTTP 502）」と出たら、まず `http://localhost:11434` を開いて Ollama が動いているか確認する。PC の再起動後は常駐が消えていることがある。
+
+回答の記録は `backend/data/app.db`（SQLite）に保存される。Git には入らない。中身は `backend` で `node scripts/sql-repl.ts data/app.db` を実行して SQL で見られる。
 
 Windows の PowerShell で `npm` が「スクリプトの実行が無効」で止まる場合は、`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` を実行するか、cmd を使う。
 
