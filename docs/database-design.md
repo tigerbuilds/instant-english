@@ -71,7 +71,7 @@ CREATE INDEX IF NOT EXISTS idx_answers_answered_at ON answers(answered_at);
 ### SQLite 固有の注意
 
 - Foreign Key の検査は既定で無効。接続のたびに `PRAGMA foreign_keys = ON` を実行する。
-- 日時は文字列として保持する。`datetime('now')` は UTC。日本時間での「日」の区切りは集計時に `+9 hours` で補正する（4 章）。
+- 日時は文字列として保持する。`datetime('now')` は UTC。「日」の区切りは集計時に `localtime`（裏側を動かしている PC のタイムゾーン）で補正する（4 章）。
 
 ---
 
@@ -97,10 +97,10 @@ ON CONFLICT(id) DO UPDATE SET japanese = excluded.japanese;
 SELECT COUNT(*) AS total FROM answers;
 ```
 
-### 回答した日の一覧（日本時間）
+### 回答した日の一覧（PC のタイムゾーン）
 
 ```sql
-SELECT DISTINCT date(answered_at, '+9 hours') AS day
+SELECT DISTINCT date(answered_at, 'localtime') AS day
 FROM answers
 ORDER BY day DESC;
 ```
@@ -111,7 +111,7 @@ ORDER BY day DESC;
 
 ```text
 days = 上の SQL の結果（新しい順）
-today = 日本時間の今日
+today = PC のタイムゾーンでの今日
 if days[0] が today でも today-1 でもない → 0
 streak = 1
 days を順に見て、前の日と 1 日差なら streak += 1、違えば終了
